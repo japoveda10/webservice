@@ -1,4 +1,4 @@
-const Influx = require('../../')
+const Influx = require('influx')
 const express = require('express')
 const http = require('http')
 const os = require('os')
@@ -23,6 +23,8 @@ const influx = new Influx.InfluxDB({
     ]
 })
 
+console.log
+
 // Makes sure the database exists and boot the app
 influx.getDatabaseNames()
     .then(names => {
@@ -32,8 +34,8 @@ influx.getDatabaseNames()
     })
     .then(() => {
         http.createServer(app).listen(3000, function () {
-            console.log('Listening on port 3000');
-        }
+            console.log('Listening on port 3000')
+        })
     })
     .catch(err => {
         console.log('Error creating Influx database!');
