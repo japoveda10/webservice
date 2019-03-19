@@ -5,10 +5,19 @@ const os = require('os')
 
 const app = express()
 
+// Adding a piece of middleware
+app.use(express.json());
+
+const users = [
+    { id: 1, name: 'user1' },
+    { id: 2, name: 'user2' },
+    { id: 3, name: 'user3' },
+]
+
 // Creates new Influx client
 const influx = new Influx.InfluxDB({
     host: 'localhost',
-    database: 'express_response_db',
+    database: 'historical',
     schema: [
         {
             measurement: 'response_times',
@@ -22,8 +31,6 @@ const influx = new Influx.InfluxDB({
         }
     ]
 })
-
-console.log
 
 // Makes sure the database exists and boot the app
 influx.getDatabaseNames()
@@ -61,14 +68,45 @@ influx.getDatabaseNames()
         return next()
     })
 
+    //---------------------------------------------
+    // Endpoints
+    //---------------------------------------------
+
+    // GETS
+
     app.get('/', function (req, res) {
-        setTimeout(() => res.end('Hello world!'), Math.random() * 500)
+        res.send('<h1>Hello World</h1>')
+    });
+
+    app.get('/api/users', function (req, res) {
+        res.send(users);
+    });
+
+    app.get('/api/users/:id', (req, res) => {
+        const user = users.find(u => u.id === parseInt(req.params.id));
+        if (!user) res.status(404).send('The user with the given ID was not found.');
+        res.send(user)
     })
 
-    app.get('/times', function (req, res) {
-        influx.query('select * from response_times where host = ${Influx.escape.stringLit(os.hostname())} order by time desc limit 10').then(result => {
-            res.json(result)
-        }).catch(err => {
-            res.status(500).send(err.stack)
-        })
-    })
+    // POSTS
+    
+    app.post('/api/users', function (req, res) {
+        const user = {
+            id: users.length + 1,
+            name: req.body.name
+        };
+        users.push(user);
+        res.send(user);
+    });
+
+    // PUTS
+
+    app.put('/user', function (req, res) {
+        res.send('Got a PUT request at /user');
+    });
+
+    // DELETES
+
+    app.delete('/user', function (req, res) {
+        res.send('Got a DELETE request at /user');
+    });
