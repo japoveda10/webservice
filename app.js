@@ -11,18 +11,22 @@ app.use(express.json());
 // Creates new Influx client
 const influx = new Influx.InfluxDB({
     host: 'localhost',
-    database: 'historical',
+    database: 'monitor',
     schema: [
         {
             measurement: [
-                'cpu',
-                'ram',
-                'networkIn',
-                'networkOut',
-                'frequencyOfDataTransmission',
+                'historical',
+                'deviceState'
             ],
             fields: {
-                value: Influx.FieldType.INTEGER,
+                id: Influx.FieldType.INTEGER,
+                cpu: Influx.FieldType.VARCHAR,
+                ram: Influx.FieldType.VARCHAR,
+                networkIn: Influx.FieldType.VARCHAR,
+                networkOut: Influx.FieldType.VARCHAR,
+                frequencyOfDataTransmission: Influx.FieldType.VARCHAR,
+                deviceInstanceId: Influx.FieldType.INTEGER,
+                releaseId: Influx.FieldType.INTEGER,
             },
             tags: [
                 'host',
@@ -35,8 +39,8 @@ const influx = new Influx.InfluxDB({
 // Makes sure the database exists and boot the app
 influx.getDatabaseNames()
     .then(names => {
-        if (!names.includes('historical')) {
-            return influx.createDatabase('historical');
+        if (!names.includes('monitor')) {
+            return influx.createDatabase('monitor');
         }
     })
     .then(() => {
@@ -49,7 +53,7 @@ influx.getDatabaseNames()
     })
 
 //---------------------------------------------
-// Endpoints
+// Historical Measurement Endpoints
 //---------------------------------------------
 
 // req can be used with params, query, and body
@@ -60,9 +64,19 @@ app.get('/', function (req, res) {
     res.send('<h1>Hello World</h1>')
 });
 
-app.get('/api/cpu', function (req, res) {
+app.get('/api/historical', function (req, res) {
     influx.query(`
-    select * from cpu
+    select * from historical
+  `).then(result => {
+        res.json(result)
+    }).catch(err => {
+        res.status(500).send(err.stack)
+    })
+});
+
+app.get('/api/historical/:id', function (req, res) {
+    influx.query(`
+    select * from historical where id = ${req.body.id}
   `).then(result => {
         res.json(result)
     }).catch(err => {
@@ -72,30 +86,44 @@ app.get('/api/cpu', function (req, res) {
 
 // POSTS
 
-app.post('/api/cpu', function (req, res) {
+identification = 0
 
-    if (!req.body.value || req.body.value < 0){
+app.post('/api/historical', function (req, res) {
+
+    if (!req.body){
         // 400 Bad Request
-        res.status(400).send("The value is required and should be possitive")
+        res.status(400).send("The request needs a body")
         return;
     }
 
     influx.writePoints([
         {
-            measurement: 'cpu',
+            measurement: 'historical',
             tags: { 
                 host: req.body.host,
                 region: req.body.region
             },
             fields: { 
-                value: req.body.value 
+                id: identification + 1,
+                cpu: req.body.cpu,
+                ram: req.body.ram,
+                networkIn: req.body.network_in,
+                networkOut: req.body.network_out,
+                frequencyOfDataTransmission: req.body.frequency_of_data_transmission,
+                deviceInstanceId: req.body.device_instance_id,
+                releaseId: req.body.release_id,
             }
         }
     ]).then(result => {
         res.send({
-            host: req.body.host,
-            region: req.body.region,
-            value: req.body.value 
+            id: identification + 1,
+            cpu: req.body.cpu,
+            ram: req.body.ram,
+            networkIn: req.body.network_in,
+            networkOut: req.body.network_out,
+            frequencyOfDataTransmission: req.body.frequency_of_data_transmission,
+            deviceInstanceId: req.body.device_instance_id,
+            releaseId: req.body.release_id,
         })
     }).catch(err => {
         console.error('Error saving data to InfluxDB! ${err.stack}')
@@ -104,20 +132,26 @@ app.post('/api/cpu', function (req, res) {
 
 // PUT
 
-app.put('/api/cpu', function (req, res) {
-    res.send('Got a PUT request at /api/cpu_measurements');
+app.put('/api/historical', function (req, res) {
+    res.send('Got a PUT request at /api/historical');
 });
 
 // DELETE
 
-app.delete('/api/cpu', function (req, res) {
+app.delete('/api/historical', function (req, res) {
     //res.send('Got a DELETE request at /user');
 
     influx.query(`
-    DELETE FROM cpu
+    DELETE FROM historical
   `).then(result => {
         res.json(result)
     }).catch(err => {
         res.status(500).send(err.stack)
     })
 });
+
+//---------------------------------------------
+// Device State Endpoints
+//---------------------------------------------
+
+
