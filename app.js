@@ -32,7 +32,8 @@ const influx = new Influx.InfluxDB({
                 value: Influx.FieldType.INTEGER,
             },
             tags: [
-                'host'
+                'host',
+                'region'
             ]
         }
     ]
@@ -54,29 +55,11 @@ influx.getDatabaseNames()
         console.log('Error creating Influx database!');
     })
 
-app.use((req, res, next) => {
-    const start = Date.now()
-
-    res.on('finish', () => {
-        const duration = Date.now() - start
-        console.log('Request to ${req.path} took ${duration}ms');
-
-        influx.writePoints([
-            {
-                measurement: 'response_times',
-                tags: { host: os.hostname() },
-                fields: { duration, path: req.path },
-            }
-        ]).catch(err => {
-            console.error('Error saving data to InfluxDB! ${err.stack}')
-        })
-    })
-    return next()
-})
-
 //---------------------------------------------
 // Endpoints
 //---------------------------------------------
+
+// req can be used with params, query, and body
 
 // GETS
 
@@ -115,14 +98,52 @@ app.post('/api/users', function (req, res) {
     res.send(user);
 });
 
-// PUTS
+app.post('/api/cpu_measurements', function (req, res) {
 
-app.put('/user', function (req, res) {
-    res.send('Got a PUT request at /user');
+    if (!req.body.value || req.body.value < 0){
+        // 400 Bad Request
+        res.status(400).send("The value is required and should be possitive")
+        return;
+    }
+
+    influx.writePoints([
+        {
+            measurement: 'cpu',
+            tags: { 
+                host: req.body.host,
+                region: req.body.region
+            },
+            fields: { 
+                value: req.body.value 
+            }
+        }
+    ]).then(result => {
+        res.send({
+            host: req.body.host,
+            region: req.body.region,
+            value: req.body.value 
+        })
+    }).catch(err => {
+        console.error('Error saving data to InfluxDB! ${err.stack}')
+    })
 });
 
-// DELETES
+// PUT
 
-app.delete('/user', function (req, res) {
-    res.send('Got a DELETE request at /user');
+app.put('/api/cpu_measurements', function (req, res) {
+    res.send('Got a PUT request at /api/cpu_measurements');
+});
+
+// DELETE
+
+app.delete('/api/cpu_measurements', function (req, res) {
+    //res.send('Got a DELETE request at /user');
+
+    influx.query(`
+    DELETE FROM cpu
+  `).then(result => {
+        res.json(result)
+    }).catch(err => {
+        res.status(500).send(err.stack)
+    })
 });
