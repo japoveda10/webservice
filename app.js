@@ -77,7 +77,7 @@ app.get('/api/users/:id', (req, res) => {
     res.send(user)
 })
 
-app.get('/api/cpu_measurements', function (req, res) {
+app.get('/api/cpu', function (req, res) {
     influx.query(`
     select * from cpu
   `).then(result => {
@@ -98,7 +98,7 @@ app.post('/api/users', function (req, res) {
     res.send(user);
 });
 
-app.post('/api/cpu_measurements', function (req, res) {
+app.post('/api/cpu', function (req, res) {
 
     if (!req.body.value || req.body.value < 0){
         // 400 Bad Request
@@ -130,13 +130,13 @@ app.post('/api/cpu_measurements', function (req, res) {
 
 // PUT
 
-app.put('/api/cpu_measurements', function (req, res) {
+app.put('/api/cpu', function (req, res) {
     res.send('Got a PUT request at /api/cpu_measurements');
 });
 
 // DELETE
 
-app.delete('/api/cpu_measurements', function (req, res) {
+app.delete('/api/cpu', function (req, res) {
     //res.send('Got a DELETE request at /user');
 
     influx.query(`
