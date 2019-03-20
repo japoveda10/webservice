@@ -28,15 +28,17 @@ Follow the next steps to get started:
 
     `$ sudo npm install`
 
-5. Now, run InfluxDB server:
+5. Now, run the InfluxDB server:
 
     `$ influxd`
 
-6. Open a new terminal window (do not close the other one) and run InfluxDB Command Line Interface:
+6. Open a new terminal window (do not close the other one) and run the next command to have access to the InfluxDB Command Line Interface:
 
     `$ influx`
     
-7. In that terminal window, you should see ">". If so, type CREATE DATABASE monitor
+7. In that terminal window, you should see a ">". If so, enter the following and hit enter:
+
+    `$ CREATE DATABASE monitor`
 
 8. Open a new terminal window (do not close the other two) and make sure you are inside the webservice folder. Then, run:
 
@@ -46,7 +48,7 @@ Follow the next steps to get started:
     
     `$ nodemon app.js`
     
-    Nodemon restarts the server when it detects changes in app.js. If you do not have it installed on your computer, you can run to install it globally on your computer
+    Nodemon restarts the server when it detects changes in app.js. If you do not have Nodemon installed on your computer, you can run the following command to install it globally on your computer:
     
     `$ npm install -g nodemon`
 
