@@ -8,6 +8,7 @@ const app = express()
 // Adding a piece of middleware
 app.use(express.json());
 
+// Users array to test endpoints
 const users = [
     { id: 1, name: 'user1' },
     { id: 2, name: 'user2' },
@@ -20,10 +21,15 @@ const influx = new Influx.InfluxDB({
     database: 'historical',
     schema: [
         {
-            measurement: 'response_times',
+            measurement: [
+                'cpu',
+                'ram',
+                'networkIn',
+                'networkOut',
+                'frequencyOfDataTransmission',
+            ],
             fields: {
-                path: Influx.FieldType.STRING,
-                duration: Influx.FieldType.INTEGER
+                value: Influx.FieldType.INTEGER,
             },
             tags: [
                 'host'
@@ -35,8 +41,8 @@ const influx = new Influx.InfluxDB({
 // Makes sure the database exists and boot the app
 influx.getDatabaseNames()
     .then(names => {
-        if (!names.includes('express_response_db')) {
-            return influx.createDatabase('express_response_db');
+        if (!names.includes('historical')) {
+            return influx.createDatabase('historical');
         }
     })
     .then(() => {
@@ -48,65 +54,75 @@ influx.getDatabaseNames()
         console.log('Error creating Influx database!');
     })
 
-    app.use((req, res, next) => {
-        const start = Date.now()
+app.use((req, res, next) => {
+    const start = Date.now()
 
-        res.on('finish', () => {
-            const duration = Date.now() - start
-            console.log('Request to ${req.path} took ${duration}ms');
+    res.on('finish', () => {
+        const duration = Date.now() - start
+        console.log('Request to ${req.path} took ${duration}ms');
 
-            influx.writePoints([
-                {
-                    measurement: 'response_times',
-                    tags: { host: os.hostname() },
-                    fields: { duration, path: req.path },
-                }
-            ]).catch(err => {
-                console.error('Error saving data to InfluxDB! ${err.stack}')
-            })
+        influx.writePoints([
+            {
+                measurement: 'response_times',
+                tags: { host: os.hostname() },
+                fields: { duration, path: req.path },
+            }
+        ]).catch(err => {
+            console.error('Error saving data to InfluxDB! ${err.stack}')
         })
-        return next()
     })
+    return next()
+})
 
-    //---------------------------------------------
-    // Endpoints
-    //---------------------------------------------
+//---------------------------------------------
+// Endpoints
+//---------------------------------------------
 
-    // GETS
+// GETS
 
-    app.get('/', function (req, res) {
-        res.send('<h1>Hello World</h1>')
-    });
+app.get('/', function (req, res) {
+    res.send('<h1>Hello World</h1>')
+});
 
-    app.get('/api/users', function (req, res) {
-        res.send(users);
-    });
+app.get('/api/users', function (req, res) {
+    res.send(users);
+});
 
-    app.get('/api/users/:id', (req, res) => {
-        const user = users.find(u => u.id === parseInt(req.params.id));
-        if (!user) res.status(404).send('The user with the given ID was not found.');
-        res.send(user)
+app.get('/api/users/:id', (req, res) => {
+    const user = users.find(u => u.id === parseInt(req.params.id));
+    if (!user) res.status(404).send('The user with the given ID was not found.');
+    res.send(user)
+})
+
+app.get('/api/cpu_measurements', function (req, res) {
+    influx.query(`
+    select * from cpu
+  `).then(result => {
+        res.json(result)
+    }).catch(err => {
+        res.status(500).send(err.stack)
     })
+});
 
-    // POSTS
-    
-    app.post('/api/users', function (req, res) {
-        const user = {
-            id: users.length + 1,
-            name: req.body.name
-        };
-        users.push(user);
-        res.send(user);
-    });
+// POSTS
 
-    // PUTS
+app.post('/api/users', function (req, res) {
+    const user = {
+        id: users.length + 1,
+        name: req.body.name
+    };
+    users.push(user);
+    res.send(user);
+});
 
-    app.put('/user', function (req, res) {
-        res.send('Got a PUT request at /user');
-    });
+// PUTS
 
-    // DELETES
+app.put('/user', function (req, res) {
+    res.send('Got a PUT request at /user');
+});
 
-    app.delete('/user', function (req, res) {
-        res.send('Got a DELETE request at /user');
-    });
+// DELETES
+
+app.delete('/user', function (req, res) {
+    res.send('Got a DELETE request at /user');
+});
