@@ -1,33 +1,46 @@
 # Web Service
 
+## Project Description
+
 Welcome to this awesome web service! It was build using Node.js, Express.js, and InfluxDB.
+
+## Steps To Get Started
 
 Follow the next steps to get started:
 
 1. Download InfluxDB Time-Series Data Storage v1.7.4
 
-You can download it [here](https://portal.influxdata.com/downloads/)
+    You can download it [here](https://portal.influxdata.com/downloads/)
 
 2. Download this repository
 
 3. Open a terminal window, and go inside the webservice folder
 
-`$ cd webservice`
+    `$ cd webservice`
 
 4. Install the required dependencies
 
-`$ sudo npm install`
+    `$ sudo npm install`
 
 5. Now, run InfluxDB server:
 
-`$ influxd`
+    `$ influxd`
 
 6. Open a new terminal window (do not close the other one) and run InfluxDB Command Line Interface:
 
-`$ influx`
+    `$ influx`
+    
+7. In that terminal window, you should see ">". If so, type CREATE DATABASE monitor
 
-7. Open a new terminal window (do not close the other two) and make sure you are inside the webservice folder. Then, run:
+8. Open a new terminal window (do not close the other two) and make sure you are inside the webservice folder. Then, run:
 
-`$ node app.js`
+    `$ node app.js`
 
-8. Now, you can go to localhost:3000
+9. Now you are ready to test endpoints!
+
+## Test endpoints
+
+You can try the next endpoints:
+
+* localhost:3000
+
