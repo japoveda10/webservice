@@ -16,7 +16,7 @@ const influx = new Influx.InfluxDB({
         {
             measurement: [
                 'historical',
-                'deviceState'
+                'device_state'
             ],
             fields: {
                 id: Influx.FieldType.INTEGER,
@@ -27,6 +27,9 @@ const influx = new Influx.InfluxDB({
                 frequencyOfDataTransmission: Influx.FieldType.VARCHAR,
                 deviceInstanceId: Influx.FieldType.INTEGER,
                 releaseId: Influx.FieldType.INTEGER,
+                deviceId: Influx.FieldType.INTEGER,
+                release: Influx.FieldType.VARCHAR,
+                software: Influx.FieldType.VARCHAR
             },
             tags: [
                 'host',
@@ -86,7 +89,7 @@ app.get('/api/historical/:id', function (req, res) {
 
 // POSTS
 
-identification = 0
+identification_historical = 0
 
 app.post('/api/historical', function (req, res) {
 
@@ -101,22 +104,25 @@ app.post('/api/historical', function (req, res) {
             measurement: 'historical',
             tags: { 
                 host: req.body.host,
-                region: req.body.region
+                region: req.body.region,
+                id: identification_historical + 1,
+                releaseId: req.body.release_id,
+                deviceId: req.body.device_id,
+                release: req.body.release,
+                software: req.body.software
             },
             fields: { 
-                id: identification + 1,
                 cpu: req.body.cpu,
                 ram: req.body.ram,
                 networkIn: req.body.network_in,
                 networkOut: req.body.network_out,
                 frequencyOfDataTransmission: req.body.frequency_of_data_transmission,
-                deviceInstanceId: req.body.device_instance_id,
-                releaseId: req.body.release_id,
+                deviceInstanceId: req.body.device_instance_id
             }
         }
     ]).then(result => {
         res.send({
-            id: identification + 1,
+            id: identification_historical + 1,
             cpu: req.body.cpu,
             ram: req.body.ram,
             networkIn: req.body.network_in,
@@ -124,6 +130,9 @@ app.post('/api/historical', function (req, res) {
             frequencyOfDataTransmission: req.body.frequency_of_data_transmission,
             deviceInstanceId: req.body.device_instance_id,
             releaseId: req.body.release_id,
+            deviceId: req.body.device_id,
+            release: req.body.release,
+            software: req.body.software
         })
     }).catch(err => {
         console.error('Error saving data to InfluxDB! ${err.stack}')
@@ -139,7 +148,6 @@ app.put('/api/historical', function (req, res) {
 // DELETE
 
 app.delete('/api/historical', function (req, res) {
-    //res.send('Got a DELETE request at /user');
 
     influx.query(`
     DELETE FROM historical
@@ -153,5 +161,70 @@ app.delete('/api/historical', function (req, res) {
 //---------------------------------------------
 // Device State Endpoints
 //---------------------------------------------
+
+app.get('/api/device_state', function (req, res) {
+    influx.query(`
+    select * from device_state
+  `).then(result => {
+        res.json(result)
+    }).catch(err => {
+        res.status(500).send(err.stack)
+    })
+});
+
+identification_device_state = 0
+
+app.post('/api/device_state', function (req, res) {
+
+    if (!req.body){
+        // 400 Bad Request
+        res.status(400).send("The request needs a body")
+        return;
+    }
+
+    influx.writePoints([
+        {
+            measurement: 'device_state',
+            tags: { 
+                host: req.body.host,
+                region: req.body.region,
+                id: identification_device_state + 1,
+                deviceInstanceId: req.body.device_instance_id,
+                deviceId: req.body.device_id,
+                release: req.body.release,
+                software: req.body.software
+            },
+            fields: { 
+                state: req.body.state
+            }
+        }
+    ]).then(result => {
+        res.send({
+            id: identification_device_state + 1,
+            state: req.body.state,
+            deviceInstanceId: req.body.device_instance_id,
+            deviceId: req.body.device_id,
+            release: req.body.release,
+            software: req.body.software
+        })
+    }).catch(err => {
+        console.error('Error saving data to InfluxDB! ${err.stack}')
+    })
+});
+
+app.put('/api/device_state', function (req, res) {
+    res.send('Got a PUT request at /api/device_state');
+});
+
+app.delete('/api/device_state', function (req, res) {
+
+    influx.query(`
+    DELETE FROM device_state
+  `).then(result => {
+        res.json(result)
+    }).catch(err => {
+        res.status(500).send(err.stack)
+    })
+});
 
 
