@@ -8,13 +8,6 @@ const app = express()
 // Adding a piece of middleware
 app.use(express.json());
 
-// Users array to test endpoints
-const users = [
-    { id: 1, name: 'user1' },
-    { id: 2, name: 'user2' },
-    { id: 3, name: 'user3' },
-]
-
 // Creates new Influx client
 const influx = new Influx.InfluxDB({
     host: 'localhost',
@@ -67,16 +60,6 @@ app.get('/', function (req, res) {
     res.send('<h1>Hello World</h1>')
 });
 
-app.get('/api/users', function (req, res) {
-    res.send(users);
-});
-
-app.get('/api/users/:id', (req, res) => {
-    const user = users.find(u => u.id === parseInt(req.params.id));
-    if (!user) res.status(404).send('The user with the given ID was not found.');
-    res.send(user)
-})
-
 app.get('/api/cpu', function (req, res) {
     influx.query(`
     select * from cpu
@@ -88,15 +71,6 @@ app.get('/api/cpu', function (req, res) {
 });
 
 // POSTS
-
-app.post('/api/users', function (req, res) {
-    const user = {
-        id: users.length + 1,
-        name: req.body.name
-    };
-    users.push(user);
-    res.send(user);
-});
 
 app.post('/api/cpu', function (req, res) {
 
