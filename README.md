@@ -56,9 +56,12 @@ Follow the next steps to get started:
 
 ## Test endpoints
 
-You can try the next endpoints:
+This is the home endpoint:
 
 * GET http://localhost:3000/ (gets a Hello World)
+
+You can try the next endpoints for the historical measure:
+
 * GET http://localhost:3000/api/historical (gets all points in historical)
 * GET http://localhost:3000/api/historical/:id (gets a specific point given its id)
 * POST http://localhost:3000/api/historical
@@ -80,9 +83,31 @@ Example of a POST request body:
     "software": "software 1"<br />
 }
 
+* PUT http://localhost:3000/api/historical (it just returns a message that it received a request)
 * DELETE http://localhost:3000/api/historical (deletes all points in historical)
 
+
+You can try the next endpoints for the device_state measure:
+
 * GET http://localhost:3000/api/device_state (gets all points in device_state)
+* GET http://localhost:3000/api/device_state/:id (gets a specific point given its id)
+* POST http://localhost:3000/api/device_state
+
+Example of a POST request body:
+
+{<br />
+    "deviceId": 1,<br />
+    "deviceInstanceId": 1,<br />
+    "host": "host 1",<br />
+    "region": "region 1",<br />
+    "release": "release 1",<br />
+    "software": "software 1",<br />
+    "state": "state 1"<br />
+}
+
+* PUT http://localhost:3000/api/device_state (it just returns a message that it received a request)
+* DELETE http://localhost:3000/api/device_state (deletes all points in device_state)
+
 
 ## InfluxDB
 
