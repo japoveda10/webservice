@@ -106,7 +106,7 @@ This is the home endpoint:
 
 * GET http://localhost:3000/ (gets a Hello World)
 
-You can try the next endpoints for the *historical* measure:
+You can try the next endpoints for the *historical* measure. Remember to change *:id* by a number.
 
 * GET http://localhost:3000/api/historical (gets all points in *historical*)
 * GET http://localhost:3000/api/historical/:id (gets a specific point in *historical* given its id)
@@ -133,9 +133,10 @@ Example of a POST request body:
 
 * PUT http://localhost:3000/api/historical (it just returns a message saying that it received a request)
 * DELETE http://localhost:3000/api/historical (deletes all points in *historical*)
+* DELETE http://localhost:3000/api/historical/:id (deletes a specific point in *historical*)
 
 
-You can try the next endpoints for the *device_state* measure:
+You can try the next endpoints for the *device_state* measure. Remember to change *:id* by a number.
 
 * GET http://localhost:3000/api/device_state (gets all points in *device_state*)
 * GET http://localhost:3000/api/device_state/:id (gets a specific point in *device_state* given its id)
@@ -157,3 +158,4 @@ Example of a POST request body:
 
 * PUT http://localhost:3000/api/device_state (it just returns a message saying that it received a request)
 * DELETE http://localhost:3000/api/device_state (deletes all points in *device_state*)
+* DELETE http://localhost:3000/api/device_state/:id (deletes a specific point in *device_state*)
