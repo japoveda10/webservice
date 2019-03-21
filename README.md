@@ -54,6 +54,52 @@ Follow the next steps to get started:
 
 9. Now you are ready to test endpoints!
 
+## InfluxDB
+
+InfluxDB is an open source Time Series database. It is written in Go and has various optimizations. The database this web service uses is called monitor. It has 2 measurements (or tables in the Relational Databases world vocabulary):
+
+- historical
+- device_state
+
+Each measurement has fields and tags. Fields are key-value pairs of something measured and tags contain metadata. Tags are indexed while fields are not.
+
+For the historical measure:
+
+- Tags
+
+    - id
+    - deviceId
+    - deviceInstanceId
+    - host
+    - region
+    - release
+    - releaseId
+    - software
+    
+- Fields
+
+    - cpu (VARCHAR)
+    - frequencyOfDataTransmission (VARCHAR)
+    - networkIn (VARCHAR)
+    - networkOut (VARCHAR)
+    - ram (VARCHAR)
+    
+For the device_state measure:
+
+- Tags
+
+    - id
+    - deviceId
+    - deviceInstanceId
+    - host
+    - region
+    - release
+    - software
+    
+- Fields
+
+    - state (VARCHAR)
+
 ## Test endpoints
 
 This is the home endpoint:
@@ -107,14 +153,3 @@ Example of a POST request body:
 
 * PUT http://localhost:3000/api/device_state (it just returns a message that it received a request)
 * DELETE http://localhost:3000/api/device_state (deletes all points in device_state)
-
-
-## InfluxDB
-
-InfluxDB is an open source Time Series database. It is written in Go and has various optimizations. The database this web service uses is called monitor. It has 2 measurements (or tables in the Relational Databases world vocabulary):
-
-- historical
-- device_state
-
-Each measurement has fields and tags.
-
