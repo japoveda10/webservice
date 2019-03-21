@@ -29,7 +29,8 @@ const influx = new Influx.InfluxDB({
                 releaseId: Influx.FieldType.INTEGER,
                 deviceId: Influx.FieldType.INTEGER,
                 release: Influx.FieldType.VARCHAR,
-                software: Influx.FieldType.VARCHAR
+                software: Influx.FieldType.VARCHAR, 
+                state: Influx.FieldType.VARCHAR
             },
             tags: [
                 'host',
@@ -79,7 +80,7 @@ app.get('/api/historical', function (req, res) {
 
 app.get('/api/historical/:id', function (req, res) {
     influx.query(`
-    select * from historical where id = ${req.body.id}
+    select * from historical where id = ${req.params.id}
   `).then(result => {
         res.json(result)
     }).catch(err => {
