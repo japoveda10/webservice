@@ -108,9 +108,9 @@ This is the home endpoint:
 
 You can try the next endpoints for the *historical* measure:
 
-* GET http://localhost:3000/api/historical (gets all points in historical)
-* GET http://localhost:3000/api/historical/:id (gets a specific point given its id)
-* POST http://localhost:3000/api/historical
+* GET http://localhost:3000/api/historical (gets all points in *historical*)
+* GET http://localhost:3000/api/historical/:id (gets a specific point in *historical* given its id)
+* POST http://localhost:3000/api/historical (adds a new point to *historical*)
 
 Example of a POST request body:
 
@@ -131,15 +131,15 @@ Example of a POST request body:
 }
 ```
 
-* PUT http://localhost:3000/api/historical (it just returns a message that it received a request)
-* DELETE http://localhost:3000/api/historical (deletes all points in historical)
+* PUT http://localhost:3000/api/historical (it just returns a message saying that it received a request)
+* DELETE http://localhost:3000/api/historical (deletes all points in *historical*)
 
 
 You can try the next endpoints for the *device_state* measure:
 
-* GET http://localhost:3000/api/device_state (gets all points in device_state)
-* GET http://localhost:3000/api/device_state/:id (gets a specific point given its id)
-* POST http://localhost:3000/api/device_state
+* GET http://localhost:3000/api/device_state (gets all points in *device_state*)
+* GET http://localhost:3000/api/device_state/:id (gets a specific point in *device_state* given its id)
+* POST http://localhost:3000/api/device_state (adds a new point to *device_state*)
 
 Example of a POST request body:
 
@@ -155,5 +155,5 @@ Example of a POST request body:
 }
 ```
 
-* PUT http://localhost:3000/api/device_state (it just returns a message that it received a request)
-* DELETE http://localhost:3000/api/device_state (deletes all points in device_state)
+* PUT http://localhost:3000/api/device_state (it just returns a message saying that it received a request)
+* DELETE http://localhost:3000/api/device_state (deletes all points in *device_state*)
