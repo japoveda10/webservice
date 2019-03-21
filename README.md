@@ -60,3 +60,12 @@ You can try the next endpoints:
 
 * localhost:3000
 
+## InfluxDB
+
+InfluxDB is an open source Time Series database. It is written in Go and has various optimizations. The database this web service uses is called monitor. It has 2 measurements (or tables in the Relational Databases world vocabulary):
+
+- historical
+- device_state
+
+Each measurement has fields and tags.
+
