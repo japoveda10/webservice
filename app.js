@@ -5,7 +5,7 @@ const os = require('os')
 
 const app = express()
 
-// Adding a piece of middleware
+// Adds piece of middleware
 app.use(express.json());
 
 // Creates new Influx client
@@ -19,22 +19,22 @@ const influx = new Influx.InfluxDB({
                 'device_state'
             ],
             fields: {
-                id: Influx.FieldType.INTEGER,
                 cpu: Influx.FieldType.VARCHAR,
-                ram: Influx.FieldType.VARCHAR,
+                frequencyOfDataTransmission: Influx.FieldType.VARCHAR,
                 networkIn: Influx.FieldType.VARCHAR,
                 networkOut: Influx.FieldType.VARCHAR,
-                frequencyOfDataTransmission: Influx.FieldType.VARCHAR,
-                deviceInstanceId: Influx.FieldType.INTEGER,
-                releaseId: Influx.FieldType.INTEGER,
-                deviceId: Influx.FieldType.INTEGER,
-                release: Influx.FieldType.VARCHAR,
-                software: Influx.FieldType.VARCHAR, 
+                ram: Influx.FieldType.VARCHAR,
                 state: Influx.FieldType.VARCHAR
             },
             tags: [
+                'id',
+                'deviceId',
+                'deviceInstanceId',
                 'host',
-                'region'
+                'region',
+                'release',
+                'releaseId',
+                'software'
             ]
         }
     ]
