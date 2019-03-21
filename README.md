@@ -114,20 +114,22 @@ You can try the next endpoints for the historical measure:
 
 Example of a POST request body:
 
-{<br />
-    "cpu": "cpu 1",<br />
-    "deviceId": 1,<br />
-    "deviceInstanceId": 1,<br />
-    "frequencyOfDataTransmission": "frequency of data transmission 1",<br />
-    "host": "host 1",<br />
-    "networkIn": "network in 1",<br />
-    "networkOut": "network out 1",<br />
-    "ram": "ram 1",<br />
-    "region": "region 1",<br />
-    "release": "release 1",<br />
-    "releaseId": 1,<br />
-    "software": "software 1"<br />
+```json
+{
+    "cpu": "cpu 1",
+    "deviceId": 1,
+    "deviceInstanceId": 1,
+    "frequencyOfDataTransmission": "frequency of data transmission 1",
+    "host": "host 1",
+    "networkIn": "network in 1",
+    "networkOut": "network out 1",
+    "ram": "ram 1",
+    "region": "region 1",
+    "release": "release 1",
+    "releaseId": 1,
+    "software": "software 1"
 }
+```
 
 * PUT http://localhost:3000/api/historical (it just returns a message that it received a request)
 * DELETE http://localhost:3000/api/historical (deletes all points in historical)
@@ -141,15 +143,17 @@ You can try the next endpoints for the device_state measure:
 
 Example of a POST request body:
 
-{<br />
-    "deviceId": 1,<br />
-    "deviceInstanceId": 1,<br />
-    "host": "host 1",<br />
-    "region": "region 1",<br />
-    "release": "release 1",<br />
-    "software": "software 1",<br />
-    "state": "state 1"<br />
+```json
+{
+    "deviceId": 1,
+    "deviceInstanceId": 1,
+    "host": "host 1",
+    "region": "region 1",
+    "release": "release 1",
+    "software": "software 1",
+    "state": "state 1"
 }
+```
 
 * PUT http://localhost:3000/api/device_state (it just returns a message that it received a request)
 * DELETE http://localhost:3000/api/device_state (deletes all points in device_state)
