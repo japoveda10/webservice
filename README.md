@@ -63,7 +63,7 @@ InfluxDB is an open source Time Series database. It is written in Go and has var
 
 Each measurement has fields and tags. Fields are key-value pairs of something measured and tags contain metadata. Tags are indexed while fields are not.
 
-For the historical measure:
+For the *historical* measure:
 
 - Tags
 
@@ -84,7 +84,7 @@ For the historical measure:
     - networkOut (VARCHAR)
     - ram (VARCHAR)
     
-For the device_state measure:
+For the *device_state* measure:
 
 - Tags
 
@@ -106,7 +106,7 @@ This is the home endpoint:
 
 * GET http://localhost:3000/ (gets a Hello World)
 
-You can try the next endpoints for the historical measure:
+You can try the next endpoints for the *historical* measure:
 
 * GET http://localhost:3000/api/historical (gets all points in historical)
 * GET http://localhost:3000/api/historical/:id (gets a specific point given its id)
@@ -135,7 +135,7 @@ Example of a POST request body:
 * DELETE http://localhost:3000/api/historical (deletes all points in historical)
 
 
-You can try the next endpoints for the device_state measure:
+You can try the next endpoints for the *device_state* measure:
 
 * GET http://localhost:3000/api/device_state (gets all points in device_state)
 * GET http://localhost:3000/api/device_state/:id (gets a specific point given its id)
