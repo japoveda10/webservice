@@ -58,7 +58,31 @@ Follow the next steps to get started:
 
 You can try the next endpoints:
 
-* localhost:3000
+* GET http://localhost:3000/ (gets a Hello World)
+* GET http://localhost:3000/api/historical (gets all points in historical)
+* GET http://localhost:3000/api/historical/:id (gets a specific point given its id)
+* POST http://localhost:3000/api/historical
+
+Example of a POST request body:
+
+{<br />
+    "cpu": "cpu 1",<br />
+    "deviceId": 1,<br />
+    "deviceInstanceId": 1,<br />
+    "frequencyOfDataTransmission": "frequency of data transmission 1",<br />
+    "host": "host 1",<br />
+    "networkIn": "network in 1",<br />
+    "networkOut": "network out 1",<br />
+    "ram": "ram 1",<br />
+    "region": "region 1",<br />
+    "release": "release 1",<br />
+    "releaseId": 1,<br />
+    "software": "software 1"<br />
+}
+
+* DELETE http://localhost:3000/api/historical (deletes all points in historical)
+
+* GET http://localhost:3000/api/device_state (gets all points in device_state)
 
 ## InfluxDB
 
