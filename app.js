@@ -28,8 +28,6 @@ const influx = new Influx.InfluxDB({
             },
             tags: [
                 'id',
-                'deviceId',
-                'deviceInstanceId',
                 'host',
                 'region',
                 'release',
@@ -92,8 +90,6 @@ app.get('/api/historical/:id', function (req, res) {
 
 // POST
 
-identification_historical = 0
-
 app.post('/api/historical', function (req, res) {
 
     if (!req.body){
@@ -102,11 +98,13 @@ app.post('/api/historical', function (req, res) {
         return;
     }
 
+    the_id_historical = Math.ceil(Math.random() * (1000 - 1) + 1)
+
     influx.writePoints([
         {
             measurement: 'historical',
             tags: { 
-                id: identification_historical + 1,
+                id: the_id_historical,
                 deviceId: req.body.deviceId,
                 deviceInstanceId: req.body.deviceInstanceId,
                 host: req.body.host,
@@ -125,7 +123,7 @@ app.post('/api/historical', function (req, res) {
         }
     ]).then(result => {
         res.send({
-            id: identification_historical + 1,
+            id: the_id_historical,
             cpu: req.body.cpu,
             deviceId: req.body.deviceId,
             deviceInstanceId: req.body.deviceInstanceId,
@@ -162,6 +160,16 @@ app.delete('/api/historical', function (req, res) {
         res.status(500).send(err.stack)
     })
 });
+
+app.delete('/api/historical/:id', function (req, res) {
+    influx.query(`
+    DELETE FROM "historical" WHERE "id" = '${req.params.id}'
+  `).then(result => {
+        res.json(result)
+    }).catch(err => {
+        res.status(500).send(err.stack)
+    })
+})
 
 //---------------------------------------------
 // Device State Endpoints
@@ -201,13 +209,15 @@ app.post('/api/device_state', function (req, res) {
         return;
     }
 
+    the_id_device_state = Math.ceil(Math.random() * (1000 - 1) + 1)
+
     influx.writePoints([
         {
             measurement: 'device_state',
             tags: {
-                id: identification_device_state + 1,
-                deviceId: req.body.device_id,
-                deviceInstanceId: req.body.device_instance_id,
+                id: the_id_device_state,
+                deviceId: req.body.deviceId,
+                deviceInstanceId: req.body.deviceInstanceId,
                 host: req.body.host,
                 region: req.body.region,
                 release: req.body.release,
@@ -219,9 +229,9 @@ app.post('/api/device_state', function (req, res) {
         }
     ]).then(result => {
         res.send({
-            id: identification_device_state + 1,
-            deviceId: req.body.device_id,
-            deviceInstanceId: req.body.device_instance_id,
+            id: the_id_device_state,
+            deviceId: req.body.deviceId,
+            deviceInstanceId: req.body.deviceInstanceId,
             host: req.body.host,
             region: req.body.region,
             release: req.body.release,
@@ -252,4 +262,12 @@ app.delete('/api/device_state', function (req, res) {
     })
 });
 
-
+app.delete('/api/device_state/:id', function (req, res) {
+    influx.query(`
+    DELETE FROM "device_state" WHERE "id" = '${req.params.id}'
+  `).then(result => {
+        res.json(result)
+    }).catch(err => {
+        res.status(500).send(err.stack)
+    })
+})
