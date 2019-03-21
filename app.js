@@ -80,7 +80,7 @@ app.get('/api/historical', function (req, res) {
 
 app.get('/api/historical/:id', function (req, res) {
     influx.query(`
-    select * from historical where id = ${req.params.id}
+    select * from historical where id = '${req.params.id}'
   `).then(result => {
         res.json(result)
     }).catch(err => {
@@ -189,7 +189,7 @@ app.get('/api/device_state', function (req, res) {
 
 app.get('/api/device_state/:id', function (req, res) {
     influx.query(`
-    select * from device_state where id = ${req.params.id}
+    select * from device_state where id = '${req.params.id}'
   `).then(result => {
         res.json(result)
     }).catch(err => {
