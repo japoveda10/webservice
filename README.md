@@ -54,61 +54,6 @@ Follow the next steps to get started:
 
 9. Now you are ready to test endpoints!
 
-## Test endpoints
-
-This is the home endpoint:
-
-* GET http://localhost:3000/ (gets a Hello World)
-
-You can try the next endpoints for the historical measure:
-
-* GET http://localhost:3000/api/historical (gets all points in historical)
-* GET http://localhost:3000/api/historical/:id (gets a specific point given its id)
-* POST http://localhost:3000/api/historical
-
-Example of a POST request body:
-
-{<br />
-    "cpu": "cpu 1",<br />
-    "deviceId": 1,<br />
-    "deviceInstanceId": 1,<br />
-    "frequencyOfDataTransmission": "frequency of data transmission 1",<br />
-    "host": "host 1",<br />
-    "networkIn": "network in 1",<br />
-    "networkOut": "network out 1",<br />
-    "ram": "ram 1",<br />
-    "region": "region 1",<br />
-    "release": "release 1",<br />
-    "releaseId": 1,<br />
-    "software": "software 1"<br />
-}
-
-* PUT http://localhost:3000/api/historical (it just returns a message that it received a request)
-* DELETE http://localhost:3000/api/historical (deletes all points in historical)
-
-
-You can try the next endpoints for the device_state measure:
-
-* GET http://localhost:3000/api/device_state (gets all points in device_state)
-* GET http://localhost:3000/api/device_state/:id (gets a specific point given its id)
-* POST http://localhost:3000/api/device_state
-
-Example of a POST request body:
-
-{<br />
-    "deviceId": 1,<br />
-    "deviceInstanceId": 1,<br />
-    "host": "host 1",<br />
-    "region": "region 1",<br />
-    "release": "release 1",<br />
-    "software": "software 1",<br />
-    "state": "state 1"<br />
-}
-
-* PUT http://localhost:3000/api/device_state (it just returns a message that it received a request)
-* DELETE http://localhost:3000/api/device_state (deletes all points in device_state)
-
-
 ## InfluxDB
 
 InfluxDB is an open source Time Series database. It is written in Go and has various optimizations. The database this web service uses is called monitor. It has 2 measurements (or tables in the Relational Databases world vocabulary):
@@ -116,5 +61,99 @@ InfluxDB is an open source Time Series database. It is written in Go and has var
 - historical
 - device_state
 
-Each measurement has fields and tags.
+Each measurement has fields and tags. Fields are key-value pairs of something measured and tags contain metadata. Tags are indexed while fields are not.
 
+For the *historical* measure:
+
+- Tags
+
+    - id
+    - deviceId
+    - deviceInstanceId
+    - host
+    - region
+    - release
+    - releaseId
+    - software
+    
+- Fields
+
+    - cpu (VARCHAR)
+    - frequencyOfDataTransmission (VARCHAR)
+    - networkIn (VARCHAR)
+    - networkOut (VARCHAR)
+    - ram (VARCHAR)
+    
+For the *device_state* measure:
+
+- Tags
+
+    - id
+    - deviceId
+    - deviceInstanceId
+    - host
+    - region
+    - release
+    - software
+    
+- Fields
+
+    - state (VARCHAR)
+
+## Test endpoints
+
+This is the home endpoint:
+
+* GET http://localhost:3000/ (gets a Hello World)
+
+You can try the next endpoints for the *historical* measure:
+
+* GET http://localhost:3000/api/historical (gets all points in historical)
+* GET http://localhost:3000/api/historical/:id (gets a specific point given its id)
+* POST http://localhost:3000/api/historical
+
+Example of a POST request body:
+
+```json
+{
+    "cpu": "cpu 1",
+    "deviceId": 1,
+    "deviceInstanceId": 1,
+    "frequencyOfDataTransmission": "frequency of data transmission 1",
+    "host": "host 1",
+    "networkIn": "network in 1",
+    "networkOut": "network out 1",
+    "ram": "ram 1",
+    "region": "region 1",
+    "release": "release 1",
+    "releaseId": 1,
+    "software": "software 1"
+}
+```
+
+* PUT http://localhost:3000/api/historical (it just returns a message that it received a request)
+* DELETE http://localhost:3000/api/historical (deletes all points in historical)
+
+
+You can try the next endpoints for the *device_state* measure:
+
+* GET http://localhost:3000/api/device_state (gets all points in device_state)
+* GET http://localhost:3000/api/device_state/:id (gets a specific point given its id)
+* POST http://localhost:3000/api/device_state
+
+Example of a POST request body:
+
+```json
+{
+    "deviceId": 1,
+    "deviceInstanceId": 1,
+    "host": "host 1",
+    "region": "region 1",
+    "release": "release 1",
+    "software": "software 1",
+    "state": "state 1"
+}
+```
+
+* PUT http://localhost:3000/api/device_state (it just returns a message that it received a request)
+* DELETE http://localhost:3000/api/device_state (deletes all points in device_state)
