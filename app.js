@@ -57,16 +57,18 @@ influx.getDatabaseNames()
     })
 
 //---------------------------------------------
-// Historical Measurement Endpoints
+// Home Endpoint
 //---------------------------------------------
-
-// req can be used with params, query, and body
-
-// GETS
 
 app.get('/', function (req, res) {
     res.send('<h1>Hello World</h1>')
 });
+
+//---------------------------------------------
+// Historical Measurement Endpoints
+//---------------------------------------------
+
+// GETS
 
 app.get('/api/historical', function (req, res) {
     influx.query(`
@@ -88,7 +90,7 @@ app.get('/api/historical/:id', function (req, res) {
     })
 });
 
-// POSTS
+// POST
 
 identification_historical = 0
 
@@ -104,35 +106,37 @@ app.post('/api/historical', function (req, res) {
         {
             measurement: 'historical',
             tags: { 
+                id: identification_historical + 1,
+                deviceId: req.body.deviceId,
+                deviceInstanceId: req.body.deviceInstanceId,
                 host: req.body.host,
                 region: req.body.region,
-                id: identification_historical + 1,
-                releaseId: req.body.release_id,
-                deviceId: req.body.device_id,
                 release: req.body.release,
+                releaseId: req.body.releaseId,
                 software: req.body.software
             },
             fields: { 
                 cpu: req.body.cpu,
-                ram: req.body.ram,
-                networkIn: req.body.network_in,
-                networkOut: req.body.network_out,
-                frequencyOfDataTransmission: req.body.frequency_of_data_transmission,
-                deviceInstanceId: req.body.device_instance_id
+                frequencyOfDataTransmission: req.body.frequencyOfDataTransmission,
+                networkIn: req.body.networkIn,
+                networkOut: req.body.networkOut,
+                ram: req.body.ram
             }
         }
     ]).then(result => {
         res.send({
             id: identification_historical + 1,
             cpu: req.body.cpu,
+            deviceId: req.body.deviceId,
+            deviceInstanceId: req.body.deviceInstanceId,
+            frequencyOfDataTransmission: req.body.frequencyOfDataTransmission,
+            host: req.body.host,
+            networkIn: req.body.networkIn,
+            networkOut: req.body.networkOut,
             ram: req.body.ram,
-            networkIn: req.body.network_in,
-            networkOut: req.body.network_out,
-            frequencyOfDataTransmission: req.body.frequency_of_data_transmission,
-            deviceInstanceId: req.body.device_instance_id,
-            releaseId: req.body.release_id,
-            deviceId: req.body.device_id,
+            region: req.body.region,
             release: req.body.release,
+            releaseId: req.body.releaseId,
             software: req.body.software
         })
     }).catch(err => {
@@ -163,6 +167,8 @@ app.delete('/api/historical', function (req, res) {
 // Device State Endpoints
 //---------------------------------------------
 
+// GETS
+
 app.get('/api/device_state', function (req, res) {
     influx.query(`
     select * from device_state
@@ -172,6 +178,18 @@ app.get('/api/device_state', function (req, res) {
         res.status(500).send(err.stack)
     })
 });
+
+app.get('/api/device_state/:id', function (req, res) {
+    influx.query(`
+    select * from device_state where id = ${req.params.id}
+  `).then(result => {
+        res.json(result)
+    }).catch(err => {
+        res.status(500).send(err.stack)
+    })
+});
+
+// POST
 
 identification_device_state = 0
 
@@ -186,12 +204,12 @@ app.post('/api/device_state', function (req, res) {
     influx.writePoints([
         {
             measurement: 'device_state',
-            tags: { 
+            tags: {
+                id: identification_device_state + 1,
+                deviceId: req.body.device_id,
+                deviceInstanceId: req.body.device_instance_id,
                 host: req.body.host,
                 region: req.body.region,
-                id: identification_device_state + 1,
-                deviceInstanceId: req.body.device_instance_id,
-                deviceId: req.body.device_id,
                 release: req.body.release,
                 software: req.body.software
             },
@@ -202,20 +220,26 @@ app.post('/api/device_state', function (req, res) {
     ]).then(result => {
         res.send({
             id: identification_device_state + 1,
-            state: req.body.state,
-            deviceInstanceId: req.body.device_instance_id,
             deviceId: req.body.device_id,
+            deviceInstanceId: req.body.device_instance_id,
+            host: req.body.host,
+            region: req.body.region,
             release: req.body.release,
-            software: req.body.software
+            software: req.body.software,
+            state: req.body.state,
         })
     }).catch(err => {
         console.error('Error saving data to InfluxDB! ${err.stack}')
     })
 });
 
+// PUT
+
 app.put('/api/device_state', function (req, res) {
     res.send('Got a PUT request at /api/device_state');
 });
+
+// DELETE
 
 app.delete('/api/device_state', function (req, res) {
 
