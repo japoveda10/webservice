@@ -41,17 +41,17 @@ const influx = new Influx.InfluxDB({
 })
 
 // Makes sure the database exists and boot the app
-//influx.getDatabaseNames()
-    //.then(names => {
-        //if (!names.includes('monitor')) {
-            //return influx.createDatabase('monitor');
-        //}
-    //})
-    //.then(() => {
-        //http.createServer(app).listen(3000, function () {
-            //console.log('Listening on port 3000')
-        //})
-    //})
+influx.getDatabaseNames()
+    .then(names => {
+        if (!names.includes('monitor')) {
+            return influx.createDatabase('monitor');
+        }
+    })
+    .then(() => {
+        http.createServer(app).listen(3000, function () {
+            console.log('Listening on port 3000')
+        })
+    })
     //.catch(err => {
         //console.log('Error creating Influx database!');
     //})
