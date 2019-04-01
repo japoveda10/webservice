@@ -24,7 +24,9 @@ const influx = new Influx.InfluxDB({
                 networkIn: Influx.FieldType.VARCHAR,
                 networkOut: Influx.FieldType.VARCHAR,
                 ram: Influx.FieldType.VARCHAR,
-                state: Influx.FieldType.VARCHAR
+                sampleDT: Influx.FieldType.VARCHAR,
+                state: Influx.FieldType.VARCHAR,
+                temperature: Influx.FieldType.VARCHAR
             },
             tags: [
                 'id',
@@ -39,20 +41,20 @@ const influx = new Influx.InfluxDB({
 })
 
 // Makes sure the database exists and boot the app
-influx.getDatabaseNames()
-    .then(names => {
-        if (!names.includes('monitor')) {
-            return influx.createDatabase('monitor');
-        }
-    })
-    .then(() => {
-        http.createServer(app).listen(3000, function () {
-            console.log('Listening on port 3000')
-        })
-    })
-    .catch(err => {
-        console.log('Error creating Influx database!');
-    })
+//influx.getDatabaseNames()
+    //.then(names => {
+        //if (!names.includes('monitor')) {
+            //return influx.createDatabase('monitor');
+        //}
+    //})
+    //.then(() => {
+        //http.createServer(app).listen(3000, function () {
+            //console.log('Listening on port 3000')
+        //})
+    //})
+    //.catch(err => {
+        //console.log('Error creating Influx database!');
+    //})
 
 //---------------------------------------------
 // Home Endpoint
@@ -118,7 +120,9 @@ app.post('/api/historical', function (req, res) {
                 frequencyOfDataTransmission: req.body.frequencyOfDataTransmission,
                 networkIn: req.body.networkIn,
                 networkOut: req.body.networkOut,
-                ram: req.body.ram
+                ram: req.body.ram,
+                sampleDT: req.body.sampleDT,
+                temperature: req.body.temperature
             }
         }
     ]).then(result => {
@@ -135,7 +139,9 @@ app.post('/api/historical', function (req, res) {
             region: req.body.region,
             release: req.body.release,
             releaseId: req.body.releaseId,
-            software: req.body.software
+            sampleDT: req.body.sampleDT,
+            software: req.body.software,
+            temperature: req.body.temperature
         })
     }).catch(err => {
         console.error('Error saving data to InfluxDB! ${err.stack}')
